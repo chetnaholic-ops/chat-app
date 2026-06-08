@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexChat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+    <main class="auth-shell">
+        <section class="auth-card glass-card">
+            <div class="brand-lockup">
+                <div class="logo-mark">N</div>
+                <div>
+                    <h1>NexChat</h1>
+                    <p>Real-time rooms for focused conversations.</p>
+                </div>
+            </div>
+
+            {% if error %}
+            <p class="form-error">{{ error }}</p>
+            {% endif %}
+
+            <form class="join-form" action="{{ url_for('chat') }}" method="get">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" maxlength="24" placeholder="Enter your name" autocomplete="off" required>
+
+                <label for="room">Room</label>
+                <select id="room" name="room" required>
+                    {% for room in rooms %}
+                    <option value="{{ room }}">{{ room }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Join Chat</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexChat | {{ room }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="chat-page">
+    <div class="chat-app" data-username="{{ username }}" data-room="{{ room }}">
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <a class="mini-brand" href="{{ url_for('index') }}" aria-label="Back to NexChat login">
+                    <span class="logo-mark small">N</span>
+                    <span>NexChat</span>
+                </a>
+                <span class="status-dot" aria-label="Online"></span>
+            </div>
+
+            <div class="room-switcher">
+                <label for="roomSelect">Room</label>
+                <select id="roomSelect">
+                    {% for option in rooms %}
+                    <option value="{{ option }}" {% if option == room %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="user-panel">
+                <div class="panel-title">
+                    <span id="roomTitle">{{ room }}</span>
+                    <span id="userCount">0</span>
+                </div>
+                <ul id="usersList" class="users-list" aria-live="polite"></ul>
+            </div>
+        </aside>
+
+        <main class="chat-panel glass-card">
+            <header class="chat-header">
+                <div>
+                    <p class="eyebrow">Room</p>
+                    <h1 id="chatRoomName">{{ room }}</h1>
+                </div>
+                <p class="signed-in">Signed in as <strong>{{ username }}</strong></p>
+            </header>
+
+            <section id="messages" class="messages" aria-live="polite"></section>
+            <div id="typingIndicator" class="typing-indicator" aria-live="polite"></div>
+
+            <form id="messageForm" class="message-form" autocomplete="off">
+                <input id="messageInput" type="text" maxlength="1000" placeholder="Write a message..." aria-label="Message">
+                <button type="submit">Send</button>
+            </form>
+        </main>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
