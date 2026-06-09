@@ -1,7 +1,16 @@
 from datetime import datetime
+import os
 
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
+
+# Prefer eventlet if available (used by our Gunicorn worker). If it's not
+# installed, let SocketIO choose a compatible async mode so the app can still run.
+try:
+    import eventlet  # noqa: F401
+    _async_mode = "eventlet"
+except Exception:
+    _async_mode = None
 
 
 ROOMS = ("General", "Tech", "Random")
@@ -9,7 +18,7 @@ MAX_HISTORY = 50
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "nexchat-local-dev"
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode=_async_mode)
 
 room_histories = {room: [] for room in ROOMS}
 room_users = {room: {} for room in ROOMS}
@@ -138,6 +147,11 @@ def handle_stop_typing():
     session = user_sessions.get(request.sid)
     if session:
         emit("stop_typing", {"username": session["username"]}, room=session["room"], skip_sid=request.sid)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    socketio.run(app, host="0.0.0.0", port=port, debug=True)
 
 
 @socketio.on("disconnect")
