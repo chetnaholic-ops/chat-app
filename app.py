@@ -149,15 +149,11 @@ def handle_stop_typing():
         emit("stop_typing", {"username": session["username"]}, room=session["room"], skip_sid=request.sid)
 
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    socketio.run(app, host="0.0.0.0", port=port, debug=True)
-
-
 @socketio.on("disconnect")
 def handle_disconnect():
     leave_current_room(request.sid)
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="127.0.0.1", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    socketio.run(app, host="0.0.0.0", port=port, debug=True)
